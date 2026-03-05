@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RiskMatrix – Cybersecurity Intelligence Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 0 — SIGN UP
+═══════════════════════════════════════════════════ -->
+<div id="screen-signup" class="screen auth-screen active">
+  <div class="auth-bg-grid"></div>
+  <div class="auth-container">
+
+    <div class="logo-block">
+      <div class="logo-symbol">⬡</div>
+      <h1 class="logo-title">RISK<span>MATRIX</span></h1>
+      <p class="logo-sub">Cybersecurity Intelligence &amp; Risk Simulator</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <span class="auth-card-title">CREATE ACCOUNT</span>
+        <span class="auth-card-sub">New agent registration</span>
+      </div>
+
+      <div class="auth-field">
+        <label for="signup-username">USERNAME</label>
+        <input type="text" id="signup-username" placeholder="Agent codename (2–20 chars)" maxlength="20" autocomplete="username"/>
+      </div>
+      <div class="auth-field">
+        <label for="signup-password">PASSWORD</label>
+        <input type="password" id="signup-password" placeholder="Minimum 4 characters" maxlength="40" autocomplete="new-password"/>
+      </div>
+      <div class="auth-field">
+        <label for="signup-password2">CONFIRM PASSWORD</label>
+        <input type="password" id="signup-password2" placeholder="Repeat your password" maxlength="40" autocomplete="new-password"/>
+      </div>
+
+      <div id="signup-error"   class="auth-msg auth-msg-error  hidden"></div>
+      <div id="signup-success" class="auth-msg auth-msg-success hidden"></div>
+
+      <button id="btn-signup" class="btn-primary btn-full">REGISTER →</button>
+
+      <p class="auth-switch">Already have an account?
+        <span class="auth-link" id="link-to-signin">Sign In here</span>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 1 — SIGN IN
+═══════════════════════════════════════════════════ -->
+<div id="screen-signin" class="screen auth-screen">
+  <div class="auth-bg-grid"></div>
+  <div class="auth-container">
+
+    <div class="logo-block">
+      <div class="logo-symbol">⬡</div>
+      <h1 class="logo-title">RISK<span>MATRIX</span></h1>
+      <p class="logo-sub">Cybersecurity Intelligence &amp; Risk Simulator</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <span class="auth-card-title">SIGN IN</span>
+        <span class="auth-card-sub">Agent authentication</span>
+      </div>
+
+      <div id="signin-notice" class="auth-msg auth-msg-success hidden"></div>
+
+      <div class="auth-field">
+        <label for="signin-username">USERNAME</label>
+        <input type="text" id="signin-username" placeholder="Your registered username" maxlength="20" autocomplete="username"/>
+      </div>
+      <div class="auth-field">
+        <label for="signin-password">PASSWORD</label>
+        <input type="password" id="signin-password" placeholder="Your password" maxlength="40" autocomplete="current-password"/>
+      </div>
+
+      <div id="signin-error" class="auth-msg auth-msg-error hidden"></div>
+
+      <button id="btn-signin" class="btn-primary btn-full">SIGN IN →</button>
+
+      <p class="auth-switch">No account yet?
+        <span class="auth-link" id="link-to-signup">Sign Up here</span>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 2 — GAME
+═══════════════════════════════════════════════════ -->
+<div id="screen-game" class="screen">
+
+  <!-- ── Global HUD (always visible during game) ── -->
+  <div class="hud">
+    <div class="hud-item">
+      <span class="hud-label">AGENT</span>
+      <span class="hud-value" id="hud-username">—</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">ROUND</span>
+      <span class="hud-value"><span id="hud-round">1</span>/5</span>
+    </div>
+    <div class="hud-item hud-score">
+      <span class="hud-label">SCORE</span>
+      <span class="hud-value" id="hud-score">0</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">CLUES</span>
+      <span class="hud-value" id="hud-clues">0</span>
+    </div>
+    <!-- Logout always visible in HUD -->
+    <button class="btn-hud-logout" id="btn-hud-logout" title="Logout">⏏ LOGOUT</button>
+  </div>
+
+  <!-- ── PHASE 1: QUESTION ── -->
+  <div id="phase-question" class="phase active">
+    <div class="phase-header">
+      <span class="phase-tag">PHASE 01 · INTELLIGENCE QUERY</span>
+      <div class="timer-ring-container">
+        <svg class="timer-ring" viewBox="0 0 60 60">
+          <circle class="timer-track" cx="30" cy="30" r="26"/>
+          <circle class="timer-fill" id="timer-circle" cx="30" cy="30" r="26"
+            stroke-dasharray="163.4" stroke-dashoffset="0"/>
+        </svg>
+        <span class="timer-number" id="timer-display">30</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <p class="question-number" id="question-number">Q1 of 5</p>
+      <p class="question-text"   id="question-text">Loading question...</p>
+      <div class="options-grid"  id="options-container"></div>
+
+      <!-- Hint box — appears below options when Heart puzzle solved -->
+      <div id="clue-hint-box" class="hint-box hidden">
+        <div class="hint-header">
+          <span class="hint-icon">❤</span>
+          <span class="hint-label">HEART CLUE UNLOCKED · CYBERSECURITY HINT</span>
+        </div>
+        <p id="clue-hint-text"></p>
+      </div>
+    </div>
+
+    <div class="clue-section">
+      <button id="btn-request-clue" class="btn-clue">
+        ❤ REQUEST HEART CLUE &nbsp;<span class="clue-cost">–2 pts</span>
+      </button>
+      <p class="clue-note">Count the hearts in a Heart API image → unlock a cybersecurity hint</p>
+    </div>
+  </div>
+
+  <!-- ── PHASE 2: CLUE MODAL ── -->
+  <div id="phase-clue-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="phase-tag" style="border-color:var(--warn);color:var(--warn);">❤ HEART PUZZLE · CLUE GATE</span>
+        <button id="btn-close-clue" class="btn-close">✕</button>
+      </div>
+      <div class="modal-instructions">
+        <p>🔍 <strong>Count the number of hearts</strong> in the image below.</p>
+        <p>A correct count unlocks a <strong>cybersecurity hint</strong> shown below your answers.</p>
+        <p class="modal-warning">⚠ –2 points deducted when you use this clue.</p>
+      </div>
+      <div class="puzzle-image-wrap">
+        <img id="clue-puzzle-img" src="" alt="Heart API puzzle — count the hearts" style="display:none"/>
+        <div id="clue-loading" class="clue-loading">⏳ Fetching Heart API puzzle...</div>
+        <div id="clue-api-error" class="clue-api-error hidden">⚠ Could not reach Heart API.</div>
+      </div>
+      <div class="puzzle-answer-row">
+        <input type="number" id="clue-answer-input" placeholder="How many hearts? (1–13)" min="1" max="13"/>
+        <button id="btn-submit-clue" class="btn-primary">CHECK</button>
+      </div>
+      <div id="clue-result" class="clue-result hidden"></div>
+    </div>
+  </div>
+
+  <!-- ── PHASE 3: ANSWER RESULT ── -->
+  <div id="phase-result" class="phase hidden">
+    <div class="result-card">
+      <div class="result-header-row">
+        <div class="result-icon" id="result-icon">✓</div>
+        <div class="result-header-text">
+          <h2 class="result-title"  id="result-title">CORRECT</h2>
+          <p  class="result-detail" id="result-detail">+10 points</p>
+        </div>
+      </div>
+      <button id="btn-to-risk" class="btn-primary">PROCEED TO RISK PHASE →</button>
+    </div>
+  </div>
+
+  <!-- ── PHASE 4: RISK DECISION ── -->
+  <div id="phase-risk" class="phase hidden">
+    <div class="phase-header">
+      <span class="phase-tag">PHASE 04 · RISK DECISION</span>
+      <span class="risk-fetch-status" id="risk-fetch-status">Fetching risk value…</span>
+    </div>
+    <div class="risk-card">
+      <p class="risk-instruction">
+        A hidden Heart API value (1–13) has been fetched.<br/>
+        It maps to a secret risk tier. <strong>You cannot see it.</strong>
+      </p>
+      <div class="risk-reward-hint">
+        <table class="reward-table">
+          <tr><th>Decision</th><th>Low Risk</th><th>Medium Risk</th><th>High Risk</th></tr>
+          <tr><td>🟢 Play Safe</td>   <td>+5</td><td>+2</td> <td>–1</td></tr>
+          <tr><td>🟠 Take Risk</td>   <td>+10</td><td>+5</td><td>–5</td></tr>
+          <tr><td>🔴 Double Down</td> <td>+20</td><td>+10</td><td>–15</td></tr>
+        </table>
+      </div>
+      <p id="risk-loading-msg" class="risk-loading-msg">⏳ Securing Heart API risk value…</p>
+      <div class="risk-buttons" id="risk-buttons">
+        <button class="btn-risk btn-safe"   data-decision="safe"   disabled>
+          <span class="risk-icon">🟢</span>
+          <span class="risk-name">PLAY SAFE</span>
+          <span class="risk-desc">Minimal reward, minimal danger</span>
+        </button>
+        <button class="btn-risk btn-take"   data-decision="take"   disabled>
+          <span class="risk-icon">🟠</span>
+          <span class="risk-name">TAKE RISK</span>
+          <span class="risk-desc">Balanced gamble</span>
+        </button>
+        <button class="btn-risk btn-double" data-decision="double" disabled>
+          <span class="risk-icon">🔴</span>
+          <span class="risk-name">DOUBLE DOWN</span>
+          <span class="risk-desc">All or nothing</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PHASE 5: RISK RESULT ── -->
+  <div id="phase-risk-result" class="phase hidden">
+    <div class="risk-result-card">
+      <span class="phase-tag">RISK OUTCOME · REVEALED</span>
+      <div class="risk-reveal-wrap">
+        <span class="reveal-label">HEART VALUE</span>
+        <span class="reveal-value" id="reveal-heart-value">—</span>
+        <span class="reveal-arrow">→</span>
+        <span class="risk-tier-reveal" id="risk-tier-reveal">MEDIUM RISK</span>
+      </div>
+      <div class="risk-outcome-grid">
+        <div class="outcome-item">
+          <span class="outcome-label">Your Decision</span>
+          <span class="outcome-val" id="risk-decision-display">—</span>
+        </div>
+        <div class="outcome-item">
+          <span class="outcome-label">Risk Tier</span>
+          <span class="outcome-val" id="risk-tier-display">—</span>
+        </div>
+        <div class="outcome-item">
+          <span class="outcome-label">Points This Phase</span>
+          <span class="outcome-val" id="risk-points-display">+5</span>
+        </div>
+        <div class="outcome-item">
+          <span class="outcome-label">Running Score</span>
+          <span class="outcome-val" id="risk-new-score">0</span>
+        </div>
+      </div>
+      <button id="btn-next-round" class="btn-primary">NEXT ROUND →</button>
+    </div>
+  </div>
+
+</div><!-- end screen-game -->
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 3 — FINAL DASHBOARD
+═══════════════════════════════════════════════════ -->
+<div id="screen-final" class="screen">
+
+  <!-- Logout always visible here too -->
+  <button class="btn-hud-logout btn-final-logout" id="btn-final-logout" title="Logout">⏏ LOGOUT</button>
+
+  <div class="final-container">
+    <div class="final-header">
+      <span class="phase-tag">MISSION COMPLETE · DEBRIEF</span>
+      <h2 class="final-title" id="final-username-title">AGENT —</h2>
+    </div>
+    <div class="final-score-block">
+      <span class="final-score-label">FINAL SCORE</span>
+      <span class="final-score-value" id="final-score">0</span>
+    </div>
+    <div class="final-stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">✅</span>
+        <span class="stat-val" id="stat-correct">0</span>
+        <span class="stat-label">Correct Answers</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">❌</span>
+        <span class="stat-val" id="stat-wrong">0</span>
+        <span class="stat-label">Wrong / Timeout</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">❤</span>
+        <span class="stat-val" id="stat-clues">0</span>
+        <span class="stat-label">Clues Used</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🎲</span>
+        <span class="stat-val" id="stat-risk-profile">—</span>
+        <span class="stat-label">Risk Profile</span>
+      </div>
+    </div>
+    <div class="behaviour-box">
+      <span class="behaviour-label">STRATEGIC BEHAVIOURAL ANALYSIS</span>
+      <p id="behaviour-message"></p>
+    </div>
+    <button id="btn-play-again" class="btn-primary">PLAY AGAIN</button>
+  </div>
+</div>
+
+<script src="js/apiService.js"></script>
+<script src="js/authManager.js"></script>
+<script src="js/quizEngine.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/clueSystem.js"></script>
+<script src="js/riskEngine.js"></script>
+<script src="js/uiController.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
