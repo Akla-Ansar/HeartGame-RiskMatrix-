@@ -119,10 +119,9 @@ function handleSignUp() {
   okEl.textContent = `✓ Account "${username}" created! Redirecting to Sign In…`;
   okEl.classList.remove('hidden');
 
-  // Show cookie consent banner now if not yet decided
-  // This is the right moment — user just created their account
-  // and needs to know a cookie will be used to keep them signed in
-  showCookieBannerIfNeeded();
+  // Show cookie consent banner for this specific new user
+  // Pass their username so consent is checked per-user, not per-browser
+  showCookieBannerIfNeeded(username);
 
   // Clear sign up fields
   document.getElementById('signup-username').value = '';
@@ -156,6 +155,12 @@ function handleSignIn() {
   }
 
   GameState.username = AuthManager.getUsername();
+
+  // Check if THIS returning user has ever given consent
+  // If they haven't (e.g. they registered on a different device),
+  // show the banner before starting the game
+  showCookieBannerIfNeeded(GameState.username);
+
   startGame();
 }
 
@@ -428,32 +433,64 @@ function handlePlayAgain() {
 
 // ═══════════════════════════════════════════════════════════════
 // COOKIE CONSENT BANNER
-// Shown on first visit. Consent stored in localStorage.
-// Banner never shown again once player has accepted or declined.
+//
+// Consent is stored PER USER — key: riskmatrix_cookie_consent_alice
+// This means every new user on the same browser gets their OWN
+// consent prompt, even if a previous user already accepted.
+//
+// Flow:
+//   Page load (no one logged in) → show banner straight away
+//   User signs up → show banner again with their real username
+//   User signs in (returning) → check THEIR consent key
+//   User accepted before → no banner, cookie set on sign in
+//   User declined before → no banner, no cookie ever set
 // ═══════════════════════════════════════════════════════════════
 
 function wireCookieConsent() {
-  // Wire the Accept and Decline buttons ONCE on page load
+  // Wire Accept and Decline buttons ONCE on page load
   document.getElementById('btn-cookie-accept').addEventListener('click', () => {
-    localStorage.setItem('riskmatrix_cookie_consent', 'accepted');
+    // Save consent under the current username (or _guest if not signed in yet)
+    const u = (AuthManager.getUsername() || '_guest').toLowerCase();
+    localStorage.setItem('riskmatrix_cookie_consent_' + u, 'accepted');
     document.getElementById('cookie-banner').classList.add('hidden');
-    // If player is already signed in, apply cookie retroactively
-    const username = AuthManager.getUsername();
-    if (username) AuthManager.reApplyCookie(username);
+    // If already signed in, set the cookie now
+    const signedIn = AuthManager.getUsername();
+    if (signedIn) AuthManager.reApplyCookie(signedIn);
   });
 
   document.getElementById('btn-cookie-decline').addEventListener('click', () => {
-    localStorage.setItem('riskmatrix_cookie_consent', 'declined');
+    const u = (AuthManager.getUsername() || '_guest').toLowerCase();
+    localStorage.setItem('riskmatrix_cookie_consent_' + u, 'declined');
     document.getElementById('cookie-banner').classList.add('hidden');
   });
 
-  // Show banner now if this is a first visit (no decision stored yet)
-  showCookieBannerIfNeeded();
+  // On page load — no user is signed in yet, show banner to every visitor
+  // unless this exact browser has NEVER had any user (extremely first visit)
+  // We show it straight away — user will decide before or after signing up
+  showCookieBannerIfNeeded(null);
 }
 
-function showCookieBannerIfNeeded() {
-  const consent = localStorage.getItem('riskmatrix_cookie_consent');
-  // Only show if player has NOT yet made a decision
-  if (consent === 'accepted' || consent === 'declined') return;
-  document.getElementById('cookie-banner').classList.remove('hidden');
+/**
+ * Shows the cookie banner if the given user has not yet made a consent decision.
+ * Pass the username after sign up / sign in.
+ * Pass null on page load — shows banner to anyone with no decision yet.
+ */
+function showCookieBannerIfNeeded(username) {
+  const banner = document.getElementById('cookie-banner');
+
+  if (username) {
+    // Called with a real username (e.g. right after sign up)
+    // Check if THIS specific user has already decided
+    const key = 'riskmatrix_cookie_consent_' + username.toLowerCase();
+    const consent = localStorage.getItem(key);
+    if (consent === 'accepted' || consent === 'declined') {
+      banner.classList.add('hidden'); // this user already decided — hide banner
+      return;
+    }
+    banner.classList.remove('hidden'); // new user — show banner
+  } else {
+    // Called on page load — no username known yet
+    // Show the banner so the user sees it before/during sign up
+    banner.classList.remove('hidden');
+  }
 }

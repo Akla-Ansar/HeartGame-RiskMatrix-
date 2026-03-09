@@ -74,7 +74,9 @@ const AuthManager = (() => {
    * max-age=86400 = cookie expires after 24 hours automatically.
    */
   function setCookie(username) {
-    const consent = localStorage.getItem('riskmatrix_cookie_consent');
+    // Check consent for THIS specific user — stored per username
+    const consentKey = 'riskmatrix_cookie_consent_' + username.toLowerCase();
+    const consent = localStorage.getItem(consentKey);
     if (consent !== 'accepted') return; // do NOT set cookie without consent
     document.cookie =
       `${COOKIE_NAME}=${encodeURIComponent(username)}` +
