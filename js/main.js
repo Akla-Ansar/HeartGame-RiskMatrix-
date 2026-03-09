@@ -119,6 +119,11 @@ function handleSignUp() {
   okEl.textContent = `✓ Account "${username}" created! Redirecting to Sign In…`;
   okEl.classList.remove('hidden');
 
+  // Show cookie consent banner now if not yet decided
+  // This is the right moment — user just created their account
+  // and needs to know a cookie will be used to keep them signed in
+  showCookieBannerIfNeeded();
+
   // Clear sign up fields
   document.getElementById('signup-username').value = '';
   document.getElementById('signup-password').value = '';
@@ -428,28 +433,27 @@ function handlePlayAgain() {
 // ═══════════════════════════════════════════════════════════════
 
 function wireCookieConsent() {
-  const consent = localStorage.getItem('riskmatrix_cookie_consent');
-
-  // Already decided — do not show banner again
-  if (consent === 'accepted' || consent === 'declined') return;
-
-  // First visit — show the banner
-  const banner = document.getElementById('cookie-banner');
-  banner.classList.remove('hidden');
-
+  // Wire the Accept and Decline buttons ONCE on page load
   document.getElementById('btn-cookie-accept').addEventListener('click', () => {
-    // Player accepted — save consent, set cookie if already signed in
     localStorage.setItem('riskmatrix_cookie_consent', 'accepted');
-    banner.classList.add('hidden');
-
-    // If player is already logged in, set the cookie now retroactively
+    document.getElementById('cookie-banner').classList.add('hidden');
+    // If player is already signed in, apply cookie retroactively
     const username = AuthManager.getUsername();
     if (username) AuthManager.reApplyCookie(username);
   });
 
   document.getElementById('btn-cookie-decline').addEventListener('click', () => {
-    // Player declined — save decision, hide banner, no cookie ever set
     localStorage.setItem('riskmatrix_cookie_consent', 'declined');
-    banner.classList.add('hidden');
+    document.getElementById('cookie-banner').classList.add('hidden');
   });
+
+  // Show banner now if this is a first visit (no decision stored yet)
+  showCookieBannerIfNeeded();
+}
+
+function showCookieBannerIfNeeded() {
+  const consent = localStorage.getItem('riskmatrix_cookie_consent');
+  // Only show if player has NOT yet made a decision
+  if (consent === 'accepted' || consent === 'declined') return;
+  document.getElementById('cookie-banner').classList.remove('hidden');
 }
