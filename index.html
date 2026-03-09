@@ -320,6 +320,32 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════
+     COOKIE CONSENT BANNER (GDPR)
+     Shown on first visit. Sits above all screens.
+     Consent stored in localStorage so banner never
+     appears again once the user has decided.
+═══════════════════════════════════════════════════ -->
+<div id="cookie-banner" class="cookie-banner hidden">
+  <div class="cookie-banner-inner">
+    <div class="cookie-banner-text">
+      <span class="cookie-banner-icon">🍪</span>
+      <div>
+        <strong>Cookie Notice</strong>
+        <p>
+          RiskMatrix uses a <strong>session cookie</strong> (<code>riskmatrix_user</code>)
+          to keep you signed in for 24 hours. No tracking. No third parties.
+          You can decline and the game will still work using localStorage only.
+        </p>
+      </div>
+    </div>
+    <div class="cookie-banner-actions">
+      <button id="btn-cookie-accept" class="btn-cookie-accept">✓ Accept Cookies</button>
+      <button id="btn-cookie-decline" class="btn-cookie-decline">✕ Decline</button>
+    </div>
+  </div>
+</div>
+
 <script src="js/apiService.js"></script>
 <script src="js/authManager.js"></script>
 <script src="js/quizEngine.js"></script>

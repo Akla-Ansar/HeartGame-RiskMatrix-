@@ -28,6 +28,7 @@ const GameState = {
 document.addEventListener('DOMContentLoaded', () => {
   wireAuthEvents();
   wireLogoutEvents();
+  wireCookieConsent();   // show banner if consent not yet decided
 
   // If already signed in (persistent session), go straight to game
   const existing = AuthManager.getUsername();
@@ -418,4 +419,37 @@ function endGame() {
 
 function handlePlayAgain() {
   startGame();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COOKIE CONSENT BANNER
+// Shown on first visit. Consent stored in localStorage.
+// Banner never shown again once player has accepted or declined.
+// ═══════════════════════════════════════════════════════════════
+
+function wireCookieConsent() {
+  const consent = localStorage.getItem('riskmatrix_cookie_consent');
+
+  // Already decided — do not show banner again
+  if (consent === 'accepted' || consent === 'declined') return;
+
+  // First visit — show the banner
+  const banner = document.getElementById('cookie-banner');
+  banner.classList.remove('hidden');
+
+  document.getElementById('btn-cookie-accept').addEventListener('click', () => {
+    // Player accepted — save consent, set cookie if already signed in
+    localStorage.setItem('riskmatrix_cookie_consent', 'accepted');
+    banner.classList.add('hidden');
+
+    // If player is already logged in, set the cookie now retroactively
+    const username = AuthManager.getUsername();
+    if (username) AuthManager.reApplyCookie(username);
+  });
+
+  document.getElementById('btn-cookie-decline').addEventListener('click', () => {
+    // Player declined — save decision, hide banner, no cookie ever set
+    localStorage.setItem('riskmatrix_cookie_consent', 'declined');
+    banner.classList.add('hidden');
+  });
 }
