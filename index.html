@@ -210,30 +210,25 @@
         A hidden Heart API value (1–13) has been fetched.<br/>
         It maps to a secret risk tier. <strong>You cannot see it.</strong>
       </p>
-      <div class="risk-reward-hint">
-        <table class="reward-table">
-          <tr><th>Decision</th><th>Low Risk</th><th>Medium Risk</th><th>High Risk</th></tr>
-          <tr><td>🟢 Play Safe</td>   <td>+5</td><td>+2</td> <td>–1</td></tr>
-          <tr><td>🟠 Take Risk</td>   <td>+10</td><td>+5</td><td>–5</td></tr>
-          <tr><td>🔴 Double Down</td> <td>+20</td><td>+10</td><td>–15</td></tr>
-        </table>
-      </div>
+      <!-- Rewards table hidden — player must decide without knowing exact points.
+           The tier (LOW/MEDIUM/HIGH) is secret. This makes it a real gamble.
+           Points are revealed AFTER the decision on the risk result screen. -->
       <p id="risk-loading-msg" class="risk-loading-msg">⏳ Securing Heart API risk value…</p>
       <div class="risk-buttons" id="risk-buttons">
         <button class="btn-risk btn-safe"   data-decision="safe"   disabled>
           <span class="risk-icon">🟢</span>
           <span class="risk-name">PLAY SAFE</span>
-          <span class="risk-desc">Minimal reward, minimal danger</span>
+          <span class="risk-desc">Low reward — low danger</span>
         </button>
         <button class="btn-risk btn-take"   data-decision="take"   disabled>
           <span class="risk-icon">🟠</span>
           <span class="risk-name">TAKE RISK</span>
-          <span class="risk-desc">Balanced gamble</span>
+          <span class="risk-desc">Higher reward — higher danger</span>
         </button>
         <button class="btn-risk btn-double" data-decision="double" disabled>
           <span class="risk-icon">🔴</span>
           <span class="risk-name">DOUBLE DOWN</span>
-          <span class="risk-desc">All or nothing</span>
+          <span class="risk-desc">Maximum reward — maximum danger</span>
         </button>
       </div>
     </div>
