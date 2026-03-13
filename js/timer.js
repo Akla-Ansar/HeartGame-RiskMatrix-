@@ -20,8 +20,8 @@ const Timer = (() => {
     if (_onTick) _onTick(_remaining);
     _intervalId = setInterval(() => {
       _remaining -= 1;
-      if (_onTick) _onTick(_remaining);
-      if (_remaining <= 0) { stop(); if (_onExpire) _onExpire(); }
+      if (_onTick) _onTick(_remaining);     // ← TICK fires every 1000ms
+      if (_remaining <= 0) { stop(); if (_onExpire) _onExpire(); }    
     }, 1000);
   }
 
