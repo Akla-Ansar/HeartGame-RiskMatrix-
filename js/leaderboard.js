@@ -15,7 +15,7 @@
  * 1. Go to supabase.com → sign up free → New Project
  * 2. Dashboard → Settings → API
  * 3. Copy: Project URL  →  https://vmoaskubzlcwymwedvvs.supabase.co
- *          anon public  →  sb_publishable_7SGsitqsAWAswgtfeIzB2A_H8e8GhJE
+ *          anon public  →  
  * 4. SQL Editor → run the CREATE TABLE command in SETUP.md
  * 5. Push to GitHub → Vercel redeploys automatically
  * ─────────────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ const LeaderBoard = (() => {
 
   // ── STEP 1:  My Supabase credentials here ─────────
   const SUPABASE_URL = 'https://vmoaskubzlcwymwedvvs.supabase.co';        // https://xxxx.supabase.co
-  const SUPABASE_KEY = 'sb_publishable_7SGsitqsAWAswgtfeIzB2A_H8e8GhJE';   // eyJhbGci...
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtb2Fza3Viemxjd3ltd2VkdnZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODUzODYsImV4cCI6MjA4OTE2MTM4Nn0.UfESwFiSu7hiIh0iNHx5Iuz54gJDzxpvWj9yNhhvzv8';
 
   // ── localStorage fallback key ─────────────────────────────
   const LOCAL_KEY = 'riskmatrix_local_scores';

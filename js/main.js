@@ -412,10 +412,11 @@ function handleNextRound() {
   startRound();
 }
 
-function endGame() {
+async function endGame() {
   const profile      = RiskEngine.getBehaviourProfile();
   const behaviourMsg = RiskEngine.getBehaviourMessage(profile);
 
+  // Show final screen immediately (leaderboard will populate after)
   UiController.showFinalScreen({
     username:    GameState.username,
     score:       GameState.score,
@@ -423,8 +424,24 @@ function endGame() {
     wrong:       GameState.wrongCount,
     cluesUsed:   GameState.cluesUsed,
     profile,
-    behaviourMsg
+    behaviourMsg,
+    topScores:   null  // show loading state while we fetch
   });
+
+  // Save this game's score, then fetch updated top 10
+  try {
+    await LeaderBoard.saveScore(GameState.username, GameState.score, profile);
+  } catch (err) {
+    console.warn('[endGame] saveScore failed:', err.message);
+  }
+
+  try {
+    const topScores = await LeaderBoard.getTopScores();
+    UiController.renderLeaderboard(topScores);
+  } catch (err) {
+    console.warn('[endGame] getTopScores failed:', err.message);
+    UiController.renderLeaderboard([]);
+  }
 }
 
 function handlePlayAgain() {
