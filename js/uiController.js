@@ -202,8 +202,12 @@ const UiController = (() => {
     document.getElementById('stat-risk-profile').textContent    = profile;
     document.getElementById('behaviour-message').textContent    = behaviourMsg;
 
-    // Render leaderboard
-    renderLeaderboard(topScores);
+    // Only render leaderboard if scores were passed in.
+    // If null, leave the "Loading scores…" spinner visible —
+    // endGame() will call renderLeaderboard() once the async fetch resolves.
+    if (topScores !== null && topScores !== undefined) {
+      renderLeaderboard(topScores);
+    }
   }
 
   // ── Leaderboard ───────────────────────────────────────────────
@@ -214,8 +218,19 @@ const UiController = (() => {
     loading.classList.add('hidden');
     list.innerHTML = '';
 
+    // Column header row
+    const header = document.createElement('div');
+    header.className = 'leaderboard-row leaderboard-col-header';
+    header.innerHTML = `
+      <span class="lb-rank">RANK</span>
+      <span class="lb-name">AGENT</span>
+      <span class="lb-score">SCORE</span>
+      <span class="lb-profile">PROFILE</span>
+    `;
+    list.appendChild(header);
+
     if (!scores || scores.length === 0) {
-      list.innerHTML = '<p class="leaderboard-empty">No scores yet. Be the first!</p>';
+      list.innerHTML += '<p class="leaderboard-empty">No scores yet. Be the first!</p>';
       return;
     }
 

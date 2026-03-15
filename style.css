@@ -1352,9 +1352,24 @@ body {
   border-bottom: 1px solid #0f2030;
   transition: background 0.15s;
 }
-.leaderboard-row:hover {
-  background: #1a2e44;
+.leaderboard-col-header {
+  border-bottom: 1px solid #1a3a5c;
+  margin-bottom: 4px;
+  padding-bottom: 8px;
 }
+.leaderboard-col-header .lb-rank,
+.leaderboard-col-header .lb-name,
+.leaderboard-col-header .lb-score,
+.leaderboard-col-header .lb-profile {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.leaderboard-col-header:hover { background: transparent; }
+
 .leaderboard-row.top-three {
   background: #111e2e;
 }
