@@ -192,7 +192,7 @@ const UiController = (() => {
   }
 
   // ── Final Screen ─────────────────────────────────────────────
-  function showFinalScreen({ username, score, correct, wrong, cluesUsed, profile, behaviourMsg }) {
+  function showFinalScreen({ username, score, correct, wrong, cluesUsed, profile, behaviourMsg, topScores }) {
     showScreen('screen-final');
     document.getElementById('final-username-title').textContent = `AGENT ${username.toUpperCase()}`;
     document.getElementById('final-score').textContent          = score;
@@ -201,6 +201,37 @@ const UiController = (() => {
     document.getElementById('stat-clues').textContent           = cluesUsed;
     document.getElementById('stat-risk-profile').textContent    = profile;
     document.getElementById('behaviour-message').textContent    = behaviourMsg;
+
+    // Render leaderboard
+    renderLeaderboard(topScores);
+  }
+
+  // ── Leaderboard ───────────────────────────────────────────────
+  function renderLeaderboard(scores) {
+    const loading = document.getElementById('leaderboard-loading');
+    const list    = document.getElementById('leaderboard-list');
+
+    loading.classList.add('hidden');
+    list.innerHTML = '';
+
+    if (!scores || scores.length === 0) {
+      list.innerHTML = '<p class="leaderboard-empty">No scores yet. Be the first!</p>';
+      return;
+    }
+
+    scores.forEach((entry, index) => {
+      const isTop3 = index < 3;
+      const medals = ['🥇', '🥈', '🥉'];
+      const row    = document.createElement('div');
+      row.className = `leaderboard-row ${isTop3 ? 'top-three' : ''}`;
+      row.innerHTML = `
+        <span class="lb-rank">${isTop3 ? medals[index] : '#' + (index + 1)}</span>
+        <span class="lb-name">${entry.username}</span>
+        <span class="lb-score">${entry.score}</span>
+        <span class="lb-profile ${entry.profile ? entry.profile.toLowerCase() : ''}">${entry.profile || '—'}</span>
+      `;
+      list.appendChild(row);
+    });
   }
 
   return {
@@ -208,7 +239,7 @@ const UiController = (() => {
     renderQuestion, highlightAnswer,
     showClueModal, hideClueModal, setPuzzleImage,
     showClueApiError, showClueResult,
-    showAnswerResult, showRiskResult, showFinalScreen
+    showAnswerResult, showRiskResult, showFinalScreen, renderLeaderboard
   };
 
 })();

@@ -1298,3 +1298,98 @@ body {
   transition: color 0.2s, border-color 0.2s;
 }
 .btn-cookie-decline:hover { color: #ff1744; border-color: #ff1744; }
+
+/* ═══════════════════════════════════════════════════
+   LEADERBOARD
+═══════════════════════════════════════════════════ */
+.leaderboard-section {
+  margin-top: 32px;
+  background: #0d1f33;
+  border: 1px solid #1a3a5c;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.leaderboard-header {
+  background: #1a2e44;
+  padding: 14px 20px;
+  border-bottom: 2px solid #00e5ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.leaderboard-title {
+  font-family: var(--font-head, 'Orbitron', sans-serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: #00e5ff;
+  letter-spacing: 2px;
+}
+.leaderboard-subtitle {
+  font-size: 11px;
+  color: #567089;
+  letter-spacing: 1px;
+}
+.leaderboard-loading {
+  padding: 20px;
+  text-align: center;
+  color: #567089;
+  font-size: 13px;
+}
+.leaderboard-empty {
+  padding: 20px;
+  text-align: center;
+  color: #567089;
+  font-size: 13px;
+}
+.leaderboard-list {
+  padding: 8px 0;
+}
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 48px 1fr 80px 120px;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #0f2030;
+  transition: background 0.15s;
+}
+.leaderboard-row:hover {
+  background: #1a2e44;
+}
+.leaderboard-row.top-three {
+  background: #111e2e;
+}
+.leaderboard-row.top-three:hover {
+  background: #1a2e44;
+}
+.lb-rank {
+  font-family: var(--font-head, 'Orbitron', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: #567089;
+}
+.lb-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e0eaf5;
+  letter-spacing: 0.5px;
+}
+.lb-score {
+  font-family: var(--font-head, 'Orbitron', sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: #00e5ff;
+  text-align: right;
+}
+.lb-profile {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-align: right;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.lb-profile.conservative { color: #2ecc71; background: rgba(46,204,113,0.1); }
+.lb-profile.balanced     { color: #ffc107; background: rgba(255,193,7,0.1);  }
+.lb-profile.aggressive   { color: #ff1744; background: rgba(255,23,68,0.1);  }
+.hidden { display: none !important; }
